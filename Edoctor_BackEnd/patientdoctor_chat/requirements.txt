@@ -1,3 +1,4 @@
 channels[daphne]
-pydoc
+pydocs
 docutils
+Django
