@@ -8,19 +8,18 @@ import java.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.annotation.JsonCreator; 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+
 /**
- * Class holding a chat message template
- * @property MEDIA_MSG constant for a nessage containing media. e.g an image, or video or sound recording value = 1998
- * @property TEXT_MSG constant for a nessage containing text only. value = 1999
- *@property message variable to hold the message.
- * @property is_patient boolean variable holding user type ( true for patient , false for doctor)
- * @property msg_type integer holding the message type
- *
- * @constructor
- * @param msg message to send
- * @param stat patient status true for patient , false for doctor
- * @param amsg_type type of message
+ * Represents a chat message in the application.
+ * 
+ * This class provides methods to convert the chat message to JSON format and deserialize JSON into a ChatModel object.
+ * 
+ * @version 1
+ * @author aivan2798
+ * @since [current date]
  */
+
 public class ChatModel
 {
     public boolean msg_owner; //0 for mine 1 for another
@@ -28,6 +27,16 @@ public class ChatModel
     public String msg_data;
     public String msg_timestamp;
     
+
+
+    /**
+     * Constructs a new ChatModel object.
+     *
+     * @param data   the message data
+     * @param owner  the message owner true for patient, false for doctor
+     * @param type   the message type: <p>can be MEDIA_MSG constant for a nessage containing media. e.g an image, or video or sound recording value = 1998</p> or <p>TEXT_MSG constant for a nessage containing text only. value = 1999</p>
+     * 
+     */
     @JsonCreator
     public ChatModel(@JsonProperty("msg_data") String data,@JsonProperty("msg_owner") boolean owner, @JsonProperty("msg_type")boolean type)
     {
@@ -36,7 +45,11 @@ public class ChatModel
         msg_data = data;
     }
     
-
+    /**
+    * Converts the ChatModel object to a JSON string.
+    *
+    * @return String the JSON representation of the ChatModel object
+    */
     public String toJson()
     {
         ObjectMapper this_mapper = new ObjectMapper();
@@ -52,6 +65,13 @@ public class ChatModel
         return json_str;
     }
 
+
+    /**
+     * Deserialize the given JSON string into a ChatModel object.
+     *
+     * @param json_String The JSON string to be deserialized.
+     * @return The ChatModel object deserialized from the JSON string, or null if unsuccessful.
+     */
     public static ChatModel deJson(String json_String)
     {
         
@@ -70,6 +90,13 @@ public class ChatModel
         return null; //return false if unsuccessful
     }
 
+
+    /**
+     * Deserialize a JSON object into a ChatModel instance.
+     *
+     * @param hashmap The LinkedHashMap representing the JSON object to be deserialized.
+     * @return The deserialized ChatModel instance if successful, otherwise null.
+     */
     public static ChatModel deJson(LinkedHashMap hashmap)
     {
         

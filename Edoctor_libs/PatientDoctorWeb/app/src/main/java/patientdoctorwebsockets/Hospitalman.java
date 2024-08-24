@@ -1,3 +1,4 @@
+
 package patientdoctorwebsockets;
 
 import okhttp3.OkHttpClient;
@@ -25,7 +26,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 
-//class to handle network requests to the hospital backend
+/**
+ * This class handles network requests to the hospital backend.
+ */
+
 public class Hospitalman 
 {
     String hospital_url = "127.0.0.1"; //localhost
@@ -34,13 +38,26 @@ public class Hospitalman
     Httpman hospital_Client; //OKHttpClient to use for connections to the hospital server
 
     public int con_ctx = 0;
+
+    /**
+     * Constructs a new Hospitalman object.
+     *
+     * @param aurl   the hospital server URL
+     * @param aport  the hospital server port
+     */
     public Hospitalman(String aurl,int aport)
     {
         hospital_url = aurl;
         hospital_port = aport;
         hospital_Client = new Httpman(hospital_url, hospital_port); //make Httpman object to handle the http connections
     }
-
+    
+    /**
+    * Registers a user using the details from the RegistrationModel.
+    *
+    * @param registration_model the RegistrationModel containing the user's registration details
+    * @return the AuthResponse object representing the response from the server
+    */
     public AuthResponse register(RegistrationModel registration_model) //register user using details from the Registration Model
     {
         String hospital_register_path = "/chatapp/register/"; //path to the registration endpoint at the hospital server
@@ -63,6 +80,12 @@ public class Hospitalman
         return null;
     }
 
+    /**
+     * Authenticates the hospital server login.
+     *
+     * @param auth_model The authentication model containing the necessary credentials.
+     * @return The AuthResponse object representing authentication response from the server.
+     */
     public AuthResponse auth(AuthModel auth_model) //method implementing hospital server login
     {
         String hospital_auth_path = "/chatapp/auth/"; //path to the login endpoint at the hospital server
@@ -87,6 +110,12 @@ public class Hospitalman
         return null;
     }
 
+    /**
+     * Authenticates the WebSocket connection.
+     *
+     * @param webSocketListener The WebSocket listener to handle events.
+     * @return True if the WebSocket connection is successfully authenticated, false otherwise.
+     */
     public boolean authWebSocket(WebSocketListener webSocketListener)
     {
         WSAuthModel ws_authmodel = new WSAuthModel();
@@ -110,12 +139,24 @@ public class Hospitalman
         
     }
 
+    /**
+     * Retrieves the session ID associated with the hospital client.
+     *
+     * @return The session ID as a String.
+     */
     public String getSessionId()
     {
 
         return  hospital_Client.getCookie("sessionid");
     }
 
+    /**
+     * Authenticates the WebSocket connection with the provided session ID.
+     * 
+     * @param webSocketListener The WebSocket listener to handle events.
+     * @param session_id The session ID to authenticate the WebSocket connection.
+     * @return True if the WebSocket connection was successfully authenticated, false otherwise.
+     */
     public boolean authWebSocket(WebSocketListener webSocketListener,String session_id)
     {
         WSAuthModel ws_authmodel = new WSAuthModel();
@@ -141,6 +182,13 @@ public class Hospitalman
 
     }
 
+    /**
+     * <b>Finds online doctors.</b>
+     * 
+     * This method looks for any online doctor.
+     * creates a chat model and sets the command to "get_online" and the message to "consultant".
+     * It then converts the chat model to a JSON string and sends it to the hospital websocket server.
+     */
     public void findOnlineDoc()
     {
         WSChatDataModel ws_chat_data_model = new WSChatDataModel(); //create chat model
@@ -154,6 +202,11 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model_str);
     }
 
+    /**
+     * Finds online doctors based on the specified specialty.
+     * 
+     * @param speciality The specialty of the doctors to search for.
+     */
     public void findOnlineDoc(String speciality)
     {
         WSChatDataModel ws_chat_data_model = new WSChatDataModel(); //create chat model
@@ -167,8 +220,13 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model_str);
     }
 
+    
     /**
-     * getAppointments
+     * Retrieves the appointments from the server based on the consultant speciality.
+     * 
+     * This method creates a chat model, sets the command to "get_appointments", and sets a dummy message as consultant.
+     * The chat model is then converted to a JSON string.
+     * The JSON string is sent to the server using the hospital_Client.wsSend() method.
      */
     public void getAppointments()
     {
@@ -184,6 +242,12 @@ public class Hospitalman
     }
 
 
+    /**
+     * Retrieves the records from the server.
+     * This method creates a chat model, sets the command to "get_records", and sets a dummy message.
+     * The chat model is then converted to a JSON string.
+     * Finally, the JSON string is sent to the server using the hospital_Client.wsSend() method.
+     */
     public void getRecords()
     {
         WSChatDataModel ws_chat_data_model = new WSChatDataModel(); //create chat model
@@ -197,6 +261,13 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model_str);
     }
 
+
+    /**
+     * Retrieves the prescriptions from the server.
+     * This method creates a chat model, sets the command to "get_prescriptions",
+     * and sets a dummy message. It then converts the model to a JSON string and
+     * sends it to the hospital client for further processing.
+     */
     public void getPrescriptions()
     {
         WSChatDataModel ws_chat_data_model = new WSChatDataModel(); //create chat model
@@ -210,6 +281,12 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model_str);
     }
 
+    /**
+     * Retrieves the chat history from the server.
+     * This method creates a chat model, sets the command to "get_chats", and sets a dummy message.
+     * The chat model is then converted to a JSON string.
+     * The JSON string is sent to the server using the hospital_Client.wsSend() method.
+     */
     public void getChatHistory()
     {
         WSChatDataModel ws_chat_data_model = new WSChatDataModel(); //create chat model
@@ -223,6 +300,12 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model_str);
     }
 
+    /**
+     * Makes an appointment with the current user specified appointment date and time.
+     * 
+     * @param appointment_date The date of the appointment.
+     * @param appointment_time The time of the appointment.
+     */
     public void makeAppointment(long appointment_date,LocalTime appointment_time)
     {
         
@@ -246,6 +329,14 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model);
     }
 
+    /**
+     * <b>Makes an appointment with a doctor based on the chat uuid.</b>
+     * 
+     * @param doc_chat_uuid The UUID of the doctor's chat.
+     * @param appointment_note The note for the appointment.
+     * @param appointment_date The date of the appointment.
+     * @param appointment_time The time of the appointment.
+     */
     public void makeAppointment(String doc_chat_uuid, String appointment_note,long appointment_date,LocalTime appointment_time)
     {
         
@@ -297,6 +388,13 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model);
     }
 
+    /**
+     * Makes a prescription for a patient in the chat based on the chat_uuid.
+     * 
+     * @param chat_uuid The UUID of the chat.
+     * @param medicine_name The name of the medicine.
+     * @param medicine_dose The dose of the medicine.
+     */
     public void makePrescription(String chat_uuid, String medicine_name,String medicine_dose)
     {
         
@@ -343,7 +441,8 @@ public class Hospitalman
     }
 
     /**
-     * function that saves the patient record
+     * function that saves the patient record based on chat_uuid
+     * @param chat_uuid uuid identifying the chat
      * @param record_title title of the record
      * @param record_details details of the patient record
      */
@@ -366,6 +465,12 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model);
     }
 
+    /**
+     * Makes a lab test appointment with the current chat user.
+     * 
+     * @param test_name The name of the lab test.
+     * @param test_personel The name of the personnel conducting the lab test.
+     */
     public void makeLabTest(String test_name,String test_personel)
     {
         
@@ -389,6 +494,13 @@ public class Hospitalman
     }
 
 
+    /**
+     * Orders an item from the hospital.
+     * 
+     * @param med_name The name of the medication to order.
+     * @param med_quantity The quantity of the medication to order.
+     * @param pharma_id The ID of the pharmacy to order from.
+     */
     public void orderItem(String med_name,Integer med_quantity, String pharma_id)
     {
         
@@ -408,6 +520,12 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model);
     }
 
+    /**
+     * Sends a chat message through the WebSocket.
+     *
+     * @param message The message to be sent.
+     * @return Returns false.
+     */
     public boolean chatWebSocket(String message)
     {
         WSChatDataModel wsChatDataModel = new WSChatDataModel();
@@ -421,6 +539,12 @@ public class Hospitalman
     }
 
     
+    /**
+     * Makes an order with the given array of order items.
+     * 
+     * @param order_cart an array of OrderItemModel representing the items in the order
+     * @return true if the order was successfully made, false otherwise
+     */
     public boolean makeOrder(OrderItemModel order_cart[])
     {
         OrderModel order_model = new OrderModel(order_cart);
@@ -436,6 +560,13 @@ public class Hospitalman
         return true;
     }
 
+    /**
+     * Sends a chat message through the WebSocket based on the chat_uuid.
+     * 
+     * @param message The message to be sent.
+     * @param chat_uuid The UUID of the chat.
+     * @return Returns false.
+     */
     public boolean chatWebSocket(String message,String chat_uuid)
     {
         WSChatDataModel wsChatDataModel = new WSChatDataModel();
@@ -449,6 +580,11 @@ public class Hospitalman
         return false;
     }
 
+    /**
+     * Returns the cookie jar used by the hospital client.
+     *
+     * @return the cookie jar used by the hospital client
+     */
     public HttpCookieJar getCookieJar()
     {
         return hospital_Client.getCookieJar();

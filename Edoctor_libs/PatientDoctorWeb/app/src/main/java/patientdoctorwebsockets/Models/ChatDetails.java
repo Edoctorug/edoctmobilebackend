@@ -5,12 +5,39 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+/**
+ * Represents the details about the user's chat.
+ */
 public class ChatDetails 
 {
+    /**
+     * full names of the user being chatted with.
+     */
     public String full_names;
+
+    /**
+     * full names of the person the doctor has been assigned to, only if the current user is not a patient.
+     */
     public String assigned_patient;
+
+    /**
+     * the user's chat uuid representing the end users websocket to where the messages with be delivered.
+     */
     public String chat_uuid;
+
+    /**
+     * the time the chat was recieved
+     */
+
     public String chat_time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MMM/yyyy HH:mm:ss a")); // get the current date and time when
+
+
+    /**
+     * Converts the ChatDetails object to a JSON string representation.
+     *
+     * @return The JSON string representation of the ChatDetails object.
+     */
     public String toJson()
     {
         ObjectMapper this_mapper = new ObjectMapper();
@@ -26,6 +53,12 @@ public class ChatDetails
         return json_str;
     }
 
+    /**
+     * Deserialize the given JSON string into a ChatDetails object.
+     * 
+     * @param json_String The JSON string to be deserialized.
+     * @return The ChatDetails object deserialized from the JSON string, or null if unsuccessful.
+     */
     public static ChatDetails deJson(String json_String)
     {
         
@@ -44,6 +77,12 @@ public class ChatDetails
         return null; //return false if unsuccessful
     }
 
+    /**
+     * Converts a LinkedHashMap object into a ChatDetails object by deserializing the JSON representation.
+     * 
+     * @param hashmap The LinkedHashMap object representing the JSON data.
+     * @return The ChatDetails object created from the JSON data, or null if the deserialization fails.
+     */
     public static ChatDetails deJson(LinkedHashMap hashmap)
     {
         
