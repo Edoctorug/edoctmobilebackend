@@ -2,3 +2,5 @@ channels[daphne]
 pydocs
 docutils
 Django
+pyscopg2-binary
+Django-Verify-Email

@@ -103,6 +103,7 @@ public class App {
         AuthModel auth_model = new AuthModel(user_name,user_pass);
         AuthResponse auth_response = hospitalman.auth(auth_model);
         //System.out.println("\n\t Login Reply: "+auth_response.status_msg);
+        System.out.print("\nRegistered status code: "+auth_response.status_code);
         System.out.print("\nRegistered status: "+auth_response.status_msg);
         System.out.print("\nRegistered Names: "+auth_response.meta_data.names);
         System.out.print("\nRegistered Occupation: "+auth_response.meta_data.user_role);
