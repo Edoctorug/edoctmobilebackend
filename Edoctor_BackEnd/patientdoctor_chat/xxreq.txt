@@ -1,0 +1,6 @@
+channels[daphne]
+pydocs
+docutils
+Django
+psycopg2-binary
+Django-Verify-Email
