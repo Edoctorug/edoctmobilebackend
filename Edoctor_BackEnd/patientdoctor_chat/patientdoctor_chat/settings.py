@@ -84,17 +84,26 @@ WSGI_APPLICATION = 'patientdoctor_chat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'defaultdb',
-        'USER': 'avnadmin',
-        'PASSWORD': 'AVNS_VhOepIPvLcV_pm-tbtZ',
-        'HOST': 'edoctor-sp-pg-edoctor-chat.i.aivencloud.com',
-        'PORT': '27904',
-    },
-    'local': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'verceldb',
+        'USER': 'default',
+        'PASSWORD': 'Ms1Cwdf3nEYT',
+        'HOST': 'ep-raspy-bread-a16nnb75-pooler.ap-southeast-1.aws.neon.tech',
+        'PORT': '5432',
     }
 }
+#    'aivencloud': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'defaultdb',
+#        'USER': 'avnadmin',
+#        'PASSWORD': 'AVNS_VhOepIPvLcV_pm-tbtZ',
+#        'HOST': 'edoctor-sp-pg-edoctor-chat.i.aivencloud.com',
+#        'PORT': '27904',
+#    },
+#    'local': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 
 # Password validation
