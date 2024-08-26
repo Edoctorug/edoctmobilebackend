@@ -26,12 +26,12 @@ def authUser(json_post):#function to authenticate the user
      """
      user_name = json_post["user_name"]#get username
      user_pwd = json_post["user_password"]#password in auth request 
-     
+     print("\tauthenticating: ",user_name," : ",user_pwd)
      auth_res = authenticate(username=user_name,password=user_pwd) #authenticate the user in the auth_user database using the username and password 
 
      if auth_res == None: #check if user is authencated
           return [None,None] #return None if user credentials are false
-
+     print("fly or die")
      auth_uid  = auth_res.pk #get current user id as primary key
 
      #first_name = auth_res["first_name"]
@@ -67,7 +67,8 @@ def auth_user(request): #user authentication view
     Returns:
         HttpResponse: The HTTP response.
     """
-    print(request)
+    print("new request")
+    #print(request)
     json_post_str = request.body #get raw request data
     json_post = json.loads(json_post_str) #turn raw data to json object
     print(json_post)

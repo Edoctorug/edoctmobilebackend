@@ -28,3 +28,12 @@ Twisted==24.7.0
 txaio==23.1.1
 typing_extensions==4.12.2
 zope.interface==7.0.1
+gunicorn==20.1.0
+djangorestframework==3.12.4
+django-cors-headers==3.9.0
+django-environ==0.4.5
+django-extensions==3.1.3
+django-filter==21.1
+django-rest-auth==0.9.5
+django-allauth==0.47.0
+requests
