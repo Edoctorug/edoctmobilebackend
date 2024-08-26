@@ -30,17 +30,43 @@ public class Httpman {
         
     }
 
+    public Httpman(String url)//contructor with endpoint url and port number
+    {
+        http_url = url;
+        http_port = 0;
+        base_url = http_url;
+        http_CookieJar = new HttpCookieJar();
+
+        okhttpclient = new OkHttpClient.Builder()
+                .cookieJar(http_CookieJar)
+                .build();
+        
+    }
+
     public String send(String data,String path)
     {
         
         String send_http_url = "";
         if(http_port>0) //check if port is specified
-        {
-            send_http_url = "http://"+http_url+":"+http_port+path;
+        {   
+            if(http_url.contains("http") || http_url.contains("https"))
+            {
+                send_http_url = http_url+":"+http_port+path;
+            }
+            else
+            {
+                send_http_url = "http://"+http_url+":"+http_port+path;
+            }
+            
         }
         else
         {
-            send_http_url = "http://"+http_url+path;
+            if(http_url.contains("http") || http_url.contains("https")) {
+                send_http_url = http_url + path;
+            }
+            else{
+                send_http_url = "http://" + http_url + path;
+            }
         } //build url for server
         System.out.println("sending to http server: "+send_http_url);
         RequestBody request_body = RequestBody.create(JSON,data);

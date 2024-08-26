@@ -16,16 +16,38 @@ public class WSman
     public WSman(OkHttpClient okHttpClient,String aws_addr,int aws_port,String path_to_websocket,WebSocketListener xwebSocketListener)//constructor argument is a websocket address
     {
         
-        ws_addr = aws_addr; 
+         
         ws_port = aws_port;
         webSocketListener = xwebSocketListener;
+        if(aws_addr.contains("http")){
+            ws_addr = aws_addr.replace("http","ws");
+        }
+        else if(aws_addr.contains("https")){
+            ws_addr = aws_addr.replace("https","wss");
+        }
+        else{
+            ws_addr = aws_addr;
+        }
+
         if(aws_port>0)
         {
-            ws_url = "ws://"+ws_addr+":"+ws_port; // build websocket url 
+            if(ws_addr.contains("ws") || ws_addr.contains("wss"))
+            {
+                ws_url = ws_addr+":"+ws_port; // build websocket url
+            }
+            else{
+                ws_url = "ws://"+ws_addr+":"+ws_port; // build websocket url
+            }
         }
         else
         {
-            ws_url = "ws://"+ws_addr;
+            if(ws_addr.contains("ws") || ws_addr.contains("wss"))
+            {
+                ws_url = ws_addr;
+            }
+            else{
+                ws_url = "ws://"+ws_addr;
+            }
         }
         parent_httpclient = okHttpClient;
         /*Request request = new Request.Builder()

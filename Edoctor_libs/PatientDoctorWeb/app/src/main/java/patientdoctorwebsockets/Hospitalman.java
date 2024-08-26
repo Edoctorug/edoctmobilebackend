@@ -51,6 +51,13 @@ public class Hospitalman
         hospital_port = aport;
         hospital_Client = new Httpman(hospital_url, hospital_port); //make Httpman object to handle the http connections
     }
+
+    public Hospitalman(String aurl)
+    {
+        hospital_url = aurl;
+        hospital_port = 0;
+        hospital_Client = new Httpman(hospital_url); //make Httpman object to handle the http connections
+    }
     
     /**
     * Registers a user using the details from the RegistrationModel.
@@ -66,7 +73,7 @@ public class Hospitalman
         String response_data = hospital_Client.send(registration_string_data, hospital_register_path); //send registration request to server end point.
         if(response_data!=null)
         {
-            
+            System.out.println("response data is: "+response_data);
             AuthResponse parse_result = AuthResponse.deJson(response_data);
 
             if(parse_result!=null)
