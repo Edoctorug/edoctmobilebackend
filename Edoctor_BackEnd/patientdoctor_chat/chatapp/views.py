@@ -109,7 +109,7 @@ def createDoctor(json_post):#add Doctor to the database entry
             doctor = Doctors(user_id=this_user)
             doctor.save()
 
-            hospital_user = HospitalUsers(user_id=this_user,user_role=user_role)
+            hospital_user = HospitalUsers(user_id=this_user,user_role=user_role,role_group="medic")
             hospital_user.save()
 
             user_data = authUser(json_post)
