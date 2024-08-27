@@ -76,8 +76,8 @@ public class App {
         */
 
         System.out.println("\t\tTesting Client Chat Interface");
-        Hospitalman hospitalman = new Hospitalman("https://edoctorugapi-hxgt9y3s.b4a.run");//"127.0.0.1", 8000);
-
+        //Hospitalman hospitalman = new Hospitalman("https://edoctorugapi-hxgt9y3s.b4a.run");//"127.0.0.1", 8000);
+        Hospitalman hospitalman = new Hospitalman("127.0.0.1", 8000);
         Scanner dash_scan = new Scanner(System.in); //app input scanner;
 
         System.out.print("Login (0) / Register (1): ");

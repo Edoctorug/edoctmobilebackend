@@ -5,6 +5,7 @@ package patientdoctorwebsockets;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import okhttp3.*;
 import patientdoctorwebsockets.HttpCookieJar;
 //import okhttp3.JavaNetCookieJar;
@@ -25,7 +26,9 @@ public class Httpman {
         http_CookieJar = new HttpCookieJar();
 
         okhttpclient = new OkHttpClient.Builder()
-                .cookieJar(http_CookieJar)
+                .cookieJar(http_CookieJar).connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .build();
         
     }
@@ -76,8 +79,9 @@ public class Httpman {
         try
         {
            Response http_response = okhttpclient.newCall(arequest).execute();
+           System.out.println("answer outputed");
            String response_str = http_response.body().string();
-           //System.out.println(response_str);
+           System.out.println(response_str);
 
            
            return response_str;

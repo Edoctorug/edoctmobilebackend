@@ -17,4 +17,5 @@ COPY . .
 EXPOSE 8000
 
 # Command to start the server
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "patientdoctor_chat.wsgi"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "patientdoctor_chat.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "patientdoctor_chat.asgi", "-w","4","-k","uvicorn.workers.UvicornWorker"]
