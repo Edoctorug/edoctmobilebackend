@@ -12,7 +12,7 @@ from chatapp.models import Doctors
 
 from .ResponseModel import ResponseMdl
 # Create your views here.
-
+specialities = ["consultant","Dentist","Physician","Dermatologist","Surgeon","Counselor","Psychiatrist","Pediatricians","Obstetrician","Nurse","Orthopedologist","Optician","Therapist","Pharmacist","Midwife","Nutritionist","Gynecologist","Urologist"]
 
 def authUser(json_post):#function to authenticate the user
      """
@@ -95,11 +95,13 @@ def createDoctor(json_post):#add Doctor to the database entry
         Doctor object as dictionary
     """
     user_name = json_post["user_name"]#doctors username
-    user_role = json_post["user_role"]
+    temp_int_user_role = int(json_post["user_role"])
+    int_user_role = 0 if (temp_int_user_role >= len(specialities)) else temp_int_user_role
+    user_role = specialities[int_user_role]
     user_password = json_post["user_password"]
     user_first_name = json_post["first_name"]
     user_last_name = json_post["last_name"]
-
+    print("using user role: ",user_role)
     try:
             this_user = User.objects.create_user(username=user_name,password=user_password,first_name=user_first_name,last_name=user_last_name)
 
@@ -167,16 +169,17 @@ def reg_user(request):
         HTTPResponse of the result
     """
     json_post_str = request.body
-    
+    print("auth body: ", json_post_str)
     json_post = json.loads(json_post_str)
     
     user_name = json_post["user_name"]
     user_role = json_post["user_role"]
+    user_type = json_post["user_type"]
     user_password = json_post["user_password"]
     user_first_name = json_post["first_name"]
     user_last_name = json_post["last_name"]
 
-    if user_role == "patient":
+    if user_type == "non-medic":
         created_id,creation_status = createPatient(json_post)
 
         if creation_status != None:
@@ -185,7 +188,7 @@ def reg_user(request):
             return HttpResponse(response_data.serial())
         else:
             return HttpResponse("User Already Registered")
-    elif user_role == "doctor":
+    elif user_type == "medic":
         created_id,creation_status = createDoctor(json_post)
 
         if creation_status == None:
@@ -194,6 +197,9 @@ def reg_user(request):
             request.session["auth_man"] = created_id
             response_data =  ResponseMdl(200,"user login sucessful",creation_status)
             return HttpResponse(response_data.serial())
+    else:
+        response_data =  ResponseMdl(404,"user login unsucessful")
+        return HttpResponse(response_data.serial())
 
     #print(json_post)
     #return HttpResponse("User Registered")
