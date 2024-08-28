@@ -84,7 +84,11 @@ public class Hospitalman
             }
         }
 
-        return null;
+        AuthResponse default_response = new AuthResponse();
+        default_response.status_msg = "Obtained unknown error";
+        default_response.status_code = 500;
+        default_response.meta_data = null;
+        return default_response;
     }
 
     /**

@@ -6,4 +6,5 @@ public class UserDetails {
     public String last_name;
     public String user_name;
     public String user_role;
+    public String user_type;
 }
