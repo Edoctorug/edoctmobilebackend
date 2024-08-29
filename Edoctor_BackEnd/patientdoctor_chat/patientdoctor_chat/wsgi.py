@@ -7,11 +7,24 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.0/howto/deployment/wsgi/
 """
 
-import os
+import os,django
 
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'patientdoctor_chat.settings')
+django.setup()
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
+from chatapp.routing import websocket_urlpatterns
 
-application = get_wsgi_application()
+dapplication = get_wsgi_application()
+application = ProtocolTypeRouter(
+    {
+        "http": dapplication,
+        "websocket": 
+            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+        ,
+    }
+)
 app = application
