@@ -17,11 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
-from .import settings
+from .import settings,views
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
-    path("chatapp/",include("chatapp.urls")), 
+    path("chatapp/",include("chatapp.urls")),
+    path("",views.mainEntry)
     
 ]
 if settings.DEBUG:
