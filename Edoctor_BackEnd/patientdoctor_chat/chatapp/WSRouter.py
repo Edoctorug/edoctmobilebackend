@@ -615,6 +615,7 @@ class ChatRouter:
         """
         chat_message = chat_obj["message"]
         this_chat_uuid = chat_obj["chat_uuid"]
+        print("finding this uuid: ",this_chat_uuid)
         active_chat_uuid = uuid.UUID(this_chat_uuid).hex
         print("finding uuid: ",active_chat_uuid)
         active_chat_object =await (sync_to_async(lambda: Chats.objects.get(chat_uuid = active_chat_uuid)))()
