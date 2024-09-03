@@ -89,7 +89,7 @@ class ChatRouter:
             patient_object = await UserDB().getHospitalObject(self.chat_user_id)
             
             if len(online_users) <1:
-                response_mdl = WSResponseMdl(200,"match","No Doctor Found")
+                response_mdl = WSResponseMdl(500,"match","No Doctor Found")
 
                 #print(adoctor_name,"\n")
                 return response_mdl.serial() 
