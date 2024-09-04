@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import sessions
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from django.template.response import TemplateResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from chatapp.models import HospitalUsers
@@ -203,3 +203,6 @@ def reg_user(request):
 
     #print(json_post)
     #return HttpResponse("User Registered")
+
+def mainPage(request):
+        return TemplateResponse(request,"index.html")
