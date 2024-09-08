@@ -76,7 +76,7 @@ class ChatRouter:
             return response_mdl.serial()
         elif chat_cmd =="set_online":
            self.setOnline(chat_obj)
-        elif chat_cmd == "get_online":
+        elif (chat_cmd == "get_online") and (self.chat_user!=None):
             if self.chat_user.user_role == "consultant":
                 #response_mdl = WSResponseMdl(500,"match","Doctor Waiting .... ")
                 #print(adoctor_name,"\n")
@@ -126,7 +126,7 @@ class ChatRouter:
                 #print(adoctor_name,"\n")
                 #return response_mdl.serial()
                 await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
-
+        elif chat_cmd == "verify_match":
                 adoctor_name = await UserDB().getFullNames(amatch_id)
                 online_meta = {"full_names":adoctor_name,"assigned_patient":"","chat_uuid":str(match_chat_uuid)}
                 response_mdl = WSResponseMdl(200,"match","Doctor Found",online_meta)

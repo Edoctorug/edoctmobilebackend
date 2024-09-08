@@ -41,12 +41,14 @@ import java.time.Instant;
 import java.time.LocalTime;
 
 public class App {
+    
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) 
     {
+        String universal_role="";
         /*
         Httpman http_man = new Httpman("127.0.0.1",8000); //register endpoint
         Httpman auth_man = new Httpman("127.0.0.1",8000);//,"/chatapp/auth/"); //login endpoint
@@ -85,7 +87,7 @@ public class App {
         int action_1 = dash_scan.nextInt(); //get login or register reply
        //doctor test AuthModel auth_model = new AuthModel("mrblack","mrblack");
         
-        
+       
        if (action_1==0)
        {
         //maxy maxim --patient]
@@ -103,23 +105,24 @@ public class App {
         AuthModel auth_model = new AuthModel(user_name,user_pass);
         AuthResponse auth_response = hospitalman.auth(auth_model);
         //System.out.println("\n\t Login Reply: "+auth_response.status_msg);
+        universal_role = auth_response.meta_data.user_role;
         System.out.print("\nRegistered status code: "+auth_response.status_code);
         System.out.print("\nRegistered status: "+auth_response.status_msg);
         System.out.print("\nRegistered Names: "+auth_response.meta_data.names);
-        System.out.print("\nRegistered Occupation: "+auth_response.meta_data.user_role);
+        System.out.print("\nRegistered Occupation: "+universal_role+"\n\n");
 
 
        }
        else
        {
-            RegistrationModel reg_model = new RegistrationModel();
+            
             /*reg_model.first_name = "Mr";
             reg_model.last_name = "Black";
             reg_model.user_name = "mrblack";
             reg_model.user_password = "mrblack";
             reg_model.user_role = "doctor";
             */
-
+            RegistrationModel reg_model = new RegistrationModel();
             //mrmax mrmax doctor || mrdax mrdax patient
             System.out.print("\nYour first_name: ");
             Scanner fname_scan = new Scanner(System.in);
@@ -152,11 +155,12 @@ public class App {
             reg_model.user_name = user_name;
             reg_model.user_password = pass_name;
             reg_model.user_role = user_role;
-
+            
             AuthResponse reg_status = hospitalman.register(reg_model);
+            universal_role = reg_status.meta_data.user_role;
             System.out.println("\nRegistered status: "+reg_status.status_msg);
             System.out.println("\nRegistered Names: "+reg_status.meta_data.names);
-            System.out.println("\nRegistered Occupation: "+reg_status.meta_data.user_role);
+            System.out.println("\nRegistered Occupation: "+universal_role+"\n\n");
        }
         
         WSAuthModel ws_authmodel = new WSAuthModel();
@@ -170,7 +174,13 @@ public class App {
        WSRouter wsRouter = new WSRouter();
        wSmanCB.setActiveRouter(wsRouter);
        hospitalman.authWebSocket(wSmanCB); //setup websocket endpoint
-       hospitalman.findOnlineDoc();
+       System.out.println("using user role: "+universal_role);
+       if(universal_role.equalsIgnoreCase("patient"))
+       {
+            System.out.println("finding doctors");
+            hospitalman.findOnlineDoc();
+       }
+       
        ResponseModel latest_response = wsRouter.start();
        String status_msg = latest_response.status_msg;
 
