@@ -1,5 +1,5 @@
 doc-venv/
 .vercel
-chatapp/__pycache__/
+chatapp/__pycache__/*
 chatapp/migrations/
-patientdoctor_chat/__pycache__/
+patientdoctor_chat/__pycache__/*
