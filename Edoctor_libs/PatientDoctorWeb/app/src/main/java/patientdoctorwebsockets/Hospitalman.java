@@ -252,6 +252,27 @@ public class Hospitalman
         hospital_Client.wsSend(ws_chat_data_model_str);
     }
 
+    /**
+     * Verifies a chat request
+     * 
+     * This method creates a chat model, sets the command to "verify_online", and sets a dummy message as consultant.
+     * The chat model is then converted to a JSON string.
+     * The JSON string is sent to the server using the hospital_Client.wsSend() method.
+     */
+    public void verifyOnline()
+    {
+        WSChatDataModel ws_chat_data_model = new WSChatDataModel(); //create chat model
+        ws_chat_data_model.cmd = "verify_match"; //use the get_online command
+        ws_chat_data_model.message = "consultant"; //dummy message
+
+        String ws_chat_data_model_str = ws_chat_data_model.toJson(); //convert the model to json string
+
+        ////System.out.println(" sending find: "+ ws_chat_data_model_str);
+
+        hospital_Client.wsSend(ws_chat_data_model_str);
+    }
+
+
 
     /**
      * Retrieves the records from the server.

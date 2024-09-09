@@ -4,6 +4,10 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import patientdoctorwebsockets.Models.ResponseModel;
+import okhttp3.*;
+import patientdoctorwebsockets.Models.*;
+import patientdoctorwebsockets.Models.WSModels.*;
+import java.util.LinkedHashMap;
 
 public class WSRouter 
 {
@@ -111,7 +115,7 @@ public class WSRouter
     {
         recent_response = responseModel;
     }
-    public void route(ResponseModel response_model)
+    public void route(WebSocket webSocket,ResponseModel response_model)
     {
         String status_type = response_model.status_type;
         int status_code = response_model.status_code;
@@ -128,6 +132,17 @@ public class WSRouter
                 found_online_doc.set(true);
                 System.out.println("\t\tmatch result: "+status_msg);
                 matchHandler(response_model);
+            case "verify_online":
+                ChatDetails xchat_details = ChatDetails.deJson((LinkedHashMap)response_model.meta_data);
+                String assigned_patient = xchat_details.assigned_patient;
+                System.out.println("Verifying match with User: "+assigned_patient);
+                WSChatDataModel ws_chat_data_model = new WSChatDataModel(); //create chat model
+                ws_chat_data_model.cmd = "verify_match"; //use the get_online command
+                ws_chat_data_model.message = assigned_patient; //patient id to match
+                String ws_chat_data_model_str = ws_chat_data_model.toJson();
+                System.out.println("sending verification string: "+ws_chat_data_model_str);
+
+                webSocket.send(ws_chat_data_model_str);
             break;
 
             case "chat":

@@ -77,7 +77,7 @@ class ChatRouter:
         elif chat_cmd =="set_online":
            self.setOnline(chat_obj)
         elif (chat_cmd == "get_online") and (self.chat_user!=None):
-            if self.chat_user.user_role == "consultant":
+            if self.chat_user.user_role != "patient":
                 #response_mdl = WSResponseMdl(500,"match","Doctor Waiting .... ")
                 #print(adoctor_name,"\n")
                 #return response_mdl.serial()
@@ -99,7 +99,23 @@ class ChatRouter:
                 active_user = await UserDB().getHospitalObject(self.chat_user_id)
                 active_match = await UserDB().getHospitalObject(amatch_id) #get doctor object for the doctor to get assigned to
                 
-                
+                doctor_chat_details = {"full_names":current_user_names,"assigned_patient":self.chat_user_id,"chat_uuid":""}
+                doctor_chat_json = WSResponseMdl(200,"verify_online","Patient Found",doctor_chat_details)
+                #print(adoctor_name,"\n")
+                #return response_mdl.serial()
+                await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()})
+
+
+        elif chat_cmd == "verify_match":
+                if self.chat_user.user_role == "patient":
+                #response_mdl = WSResponseMdl(500,"match","Doctor Waiting .... ")
+                #print(adoctor_name,"\n")
+                #return response_mdl.serial()
+                    return None
+                patient_id = chat_obj["message"]
+                print("verifying patient: ",patient_id)
+                active_user = await UserDB().getHospitalObject(self.chat_user_id)
+                active_match = await UserDB().getHospitalObject(patient_id) #get patient object for the patient to get assigned to
                 user_chat_uuid = await (sync_to_async(lambda :self.initChat(active_user,active_match)))() #save the assignment
                 #await save_patient()
                 #print("\t\tpatient object: ",active_patient)
@@ -121,18 +137,23 @@ class ChatRouter:
                 #doctor_chat_json = doctor_response_mdl.serial() #online doctor reply
                 current_user_names = await UserDB().getFullNames(self.chat_user_id)
             
-                doctor_chat_details = {"full_names":current_user_names,"assigned_patient":"","chat_uuid":str(user_chat_uuid)}
-                doctor_chat_json = WSResponseMdl(200,"match","Patient Found",doctor_chat_details)
-                #print(adoctor_name,"\n")
-                #return response_mdl.serial()
-                await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
-        elif chat_cmd == "verify_match":
+                
                 adoctor_name = await UserDB().getFullNames(amatch_id)
-                online_meta = {"full_names":adoctor_name,"assigned_patient":"","chat_uuid":str(match_chat_uuid)}
+                online_meta = {"full_names":adoctor_name,"assigned_patient":"","chat_uuid":str(user_chat_uuid)}
                 response_mdl = WSResponseMdl(200,"match","Doctor Found",online_meta)
 
                 print(adoctor_name,"\n")
-                return response_mdl.serial()
+                await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":response_mdl.serial()}) #
+                #return response_mdl.serial()
+
+
+                doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
+                doctor_chat_json = WSResponseMdl(200,"match","Patient Found",doctor_chat_details)
+                #print(adoctor_name,"\n")
+                #return response_mdl.serial()
+                #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
+                return doctor_chat_json.serial()
+        
             #print("\n\nOnline Doctors: ", online_doctors)
         elif chat_cmd == "chat":
                 print("chat message")

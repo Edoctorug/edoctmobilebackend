@@ -41,7 +41,7 @@ public class WSmanCB extends WebSocketListener //Websocket listener
         
         System.out.println("\nMeta Reply: ");
         
-        ws_router.route(responseModel);
+        ws_router.route(webSocket,responseModel);
         
         
     }
