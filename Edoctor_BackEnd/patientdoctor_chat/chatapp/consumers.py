@@ -38,7 +38,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         #print("auth man is: ", session_data)
 
     async def disconnect(self, close_code):
-        super().disconnect(self,close_code)
+        super().disconnect(close_code)
         print(self.scope["data"])
         delUser = sync_to_async(self.ws_router.delUser)#use sync_to_async to call the async delUser function asynchronously
         await delUser() #remove channel name and make user offline

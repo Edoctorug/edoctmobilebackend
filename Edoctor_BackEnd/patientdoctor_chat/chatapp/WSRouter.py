@@ -93,18 +93,19 @@ class ChatRouter:
 
                 #print(adoctor_name,"\n")
                 return response_mdl.serial() 
-            
+            print("\tall online users: ",online_users)
             for online_match in online_users:
                 amatch_id = online_match["user_id_id"]
                 active_user = await UserDB().getHospitalObject(self.chat_user_id)
                 active_match = await UserDB().getHospitalObject(amatch_id) #get doctor object for the doctor to get assigned to
-                
+                current_user_names = await UserDB().getFullNames(self.chat_user_id)
                 doctor_chat_details = {"full_names":current_user_names,"assigned_patient":self.chat_user_id,"chat_uuid":""}
                 doctor_chat_json = WSResponseMdl(200,"verify_online","Patient Found",doctor_chat_details)
+                self.chat_to_channel = await UserDB().getChannelName(active_match.id)
                 #print(adoctor_name,"\n")
                 #return response_mdl.serial()
                 await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()})
-
+            print("finished iterating online users")
 
         elif chat_cmd == "verify_match":
                 if self.chat_user.user_role == "patient":
@@ -113,6 +114,7 @@ class ChatRouter:
                 #return response_mdl.serial()
                     return None
                 patient_id = chat_obj["message"]
+                amatch_id = patient_id
                 print("verifying patient: ",patient_id)
                 active_user = await UserDB().getHospitalObject(self.chat_user_id)
                 active_match = await UserDB().getHospitalObject(patient_id) #get patient object for the patient to get assigned to
