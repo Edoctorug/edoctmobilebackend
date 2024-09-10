@@ -130,6 +130,14 @@ class ChatRouter:
 
 
                 #assigned_doctor = await (sync_to_async(lambda :patient_object.assigned_doctor.user_id))()
+
+                if (len(user_chat_uuid)<=0) and (len(match_chat_uuid)<=0):
+                        doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
+                        doctor_chat_json = WSResponseMdl(500,"match","Patient Not Found",doctor_chat_details)
+                        #print(adoctor_name,"\n")
+                        #return response_mdl.serial()
+                        #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
+                        return doctor_chat_json.serial()
                 self.chat_to_channel = await UserDB().getChannelName(active_match.id)
                 #print("assigned doctor", self.chat_to_channel)
 
@@ -285,8 +293,9 @@ class ChatRouter:
             chat_uuid = chat_model.chat_uuid
             return chat_uuid
          else:
-              chat_uuid = user_chats[0].chat_uuid
-              return chat_uuid
+              #chat_uuid = user_chats[0].chat_uuid
+              #return chat_uuid
+              return ""
               
     def setOnline(self, chat_obj):
          online_status = self.chat_obj["online_status"]
