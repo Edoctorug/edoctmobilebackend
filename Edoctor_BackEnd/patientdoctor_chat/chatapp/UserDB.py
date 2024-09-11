@@ -24,9 +24,23 @@ class UserDB:
         """
         get_full_names = sync_to_async(self.getFullnames)
         user_names = await get_full_names(userID)
-        
-        return user_names
-    def getUserObject(self,userID):
+    
+    async def getUserObject(self,userID):
+        """
+        Retrieves the full names associated with the given user ID asynchronously.
+
+        Args:
+            self: The instance of the class.
+            userID (int): The user ID for which full names are to be retrieved.
+
+        Returns:
+            str: The full names associated with the given user ID.
+        """
+        get_user_object = sync_to_async(self.getUserobject)
+        user_object = await get_user_object(userID)
+
+        return user_object
+    def getUserobject(self,userID):
         """
         Retrieves the user object associated with the given user ID.
 
