@@ -48,7 +48,7 @@ class Patients(models.Model):
            assigned_doctor (Doctors ForeignKey) : the doctor the patient is assigned to
     
     """
-    user_id = models.ForeignKey(User, on_delete = models.CASCADE)
+    user_id = models.ForeignKey(User,unique=True, on_delete = models.CASCADE)
     assigned_doctor = models.ForeignKey(Doctors, on_delete = models.CASCADE, null=True)
     pair_status = models.BooleanField(default=False)
 

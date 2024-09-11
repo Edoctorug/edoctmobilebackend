@@ -322,7 +322,9 @@ class ChatRouter:
         patient_object = Patients.objects.filter(user_id = active_patient, assigned_doctor = active_medic)#,receiver = active_receiver)
 
         if len(patient_object)==0:
-            patient_model = Patients(user_id = active_patient, assigned_doctor = active_medic, pair_status = True)
+            patient_model = Patients.objects.get(user_id = active_patient)
+            patient_model.assigned_doctor = active_medic
+            patient_model.pair_status = True
             patient_model.save()
             
             return True
@@ -335,7 +337,9 @@ class ChatRouter:
         #patient_object = Patients.objects.filter(user_id = active_patient, assigned_doctor = active_medic)#,receiver = active_receiver)
 
         #if len(patient_object)==0:
-        patient_model = Patients(user_id = active_patient, assigned_doctor = None, pair_status = False)
+        patient_model = Patients.objects.get(user_id = active_patient)
+        patient_object.assigned_doctor = None
+        patient_object.pair_status = False
         patient_model.save()
             
         #    return True
