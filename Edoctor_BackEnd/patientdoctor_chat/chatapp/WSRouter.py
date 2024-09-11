@@ -124,7 +124,7 @@ class ChatRouter:
                 active_patient_user = await UserDB().getUserObject(patient_id)
                 active_doctor = await UserDB().getDoctorObject(self.chat_user_id)
                 if (active_patient.pair_status==True):
-                        doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
+                        doctor_chat_details = {"full_names":"","assigned_patient":patient_id,"chat_uuid":""}
                         doctor_chat_json = WSResponseMdl(500,"match","Patient Not Found",doctor_chat_details)
                         #print(adoctor_name,"\n")
                         #return response_mdl.serial()
@@ -132,13 +132,13 @@ class ChatRouter:
                         return doctor_chat_json.serial()
 
                 init_patient_status = await (sync_to_async(lambda :self.initPatient(active_patient_user,active_doctor)))() #init patient dataset
-                if (init_patient_status==True):
-                        doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
-                        doctor_chat_json = WSResponseMdl(500,"match","Patient Busy",doctor_chat_details)
+                if (init_patient_status==False):
+                        patient_chat_details = {"full_names":"","assigned_patient":"","chat_uuid":""}
+                        patient_chat_json = WSResponseMdl(500,"match","Patient Error",doctor_chat_details)
                         #print(adoctor_name,"\n")
                         #return response_mdl.serial()
                         #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
-                        return doctor_chat_json.serial()
+                        return patient_chat_json.serial()
                 user_chat_uuid = await (sync_to_async(lambda :self.initChat(active_user,active_match)))() #save the assignment
                 #await save_patient()
                 #print("\t\tpatient object: ",active_patient)
@@ -153,7 +153,7 @@ class ChatRouter:
                 #assigned_doctor = await (sync_to_async(lambda :patient_object.assigned_doctor.user_id))()
 
                 if (len(user_chat_uuid)<=0) and (len(match_chat_uuid)<=0):
-                        doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
+                        doctor_chat_details = {"full_names":"","assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
                         doctor_chat_json = WSResponseMdl(500,"match","Patient Not Found",doctor_chat_details)
                         #print(adoctor_name,"\n")
                         #return response_mdl.serial()
