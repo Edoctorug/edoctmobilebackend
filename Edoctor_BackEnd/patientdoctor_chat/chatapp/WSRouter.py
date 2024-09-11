@@ -139,6 +139,7 @@ class ChatRouter:
                         #return response_mdl.serial()
                         #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
                         return patient_chat_json.serial()
+                await (sync_to_async(lambda :self.initDoctor(active_match,active_doctor)))()
                 user_chat_uuid = await (sync_to_async(lambda :self.initChat(active_user,active_match)))() #save the assignment
                 #await save_patient()
                 #print("\t\tpatient object: ",active_patient)
@@ -326,12 +327,19 @@ class ChatRouter:
             patient_model.assigned_doctor = active_medic
             patient_model.pair_status = True
             patient_model.save()
+
+
             
             return True
         else:
               #chat_uuid = user_chats[0].chat_uuid
               #return chat_uuid
               return False
+    def initDoctor(self,active_patient_hospital,active_medic):
+
+        #patient_object = Patients.objects.filter(user_id = active_patient_x, assigned_doctor = active_medic)#,receiver = active_receiver)
+        active_medic.assigned_patient = active_patient_hospital
+        active_medic.save()
 
     def resetPatient(self,active_patient):
         #patient_object = Patients.objects.filter(user_id = active_patient, assigned_doctor = active_medic)#,receiver = active_receiver)
