@@ -24,6 +24,7 @@ class UserDB:
         """
         get_full_names = sync_to_async(self.getFullnames)
         user_names = await get_full_names(userID)
+        return user_names
     
     async def getUserObject(self,userID):
         """
