@@ -340,7 +340,7 @@ class ChatRouter:
         patient_object = Patients.objects.get(user_id = active_patient)
         patient_object.assigned_doctor = None
         patient_object.pair_status = False
-        patient_model.save()
+        patient_object.save()
             
         #    return True
         # else:
