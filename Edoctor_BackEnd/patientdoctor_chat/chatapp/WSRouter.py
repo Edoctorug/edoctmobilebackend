@@ -312,11 +312,11 @@ class ChatRouter:
             chat_model = Chats(sender = active_sender, receiver = active_receiver)
             chat_model.save()
             chat_uuid = chat_model.chat_uuid
-            return chat_uuid
+            return str(chat_uuid)
          else:
               chat_uuid = user_chats[0].chat_uuid
               #return chat_uuid
-              return chat_uuid
+              return str(chat_uuid)
     def initPatient(self,active_patient_x,active_medic):
 
         patient_object = Patients.objects.filter(user_id = active_patient_x, assigned_doctor = active_medic)#,receiver = active_receiver)
