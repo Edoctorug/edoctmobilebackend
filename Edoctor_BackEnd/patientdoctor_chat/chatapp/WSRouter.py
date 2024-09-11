@@ -88,7 +88,7 @@ class ChatRouter:
             print("finding session id : ",self.chat_session_id)
             patient_object = await UserDB().getHospitalObject(self.chat_user_id)
             active_patient_x =  await UserDB().getPatientObject(self.chat_user_id)
-            init_patient_status = await (sync_to_async(lambda :self.resetPatient(active_patient_x)))()
+            init_patient_status = await (sync_to_async(lambda :self.resetPatient(self.chat_user)))()
             if len(online_users) <1:
                 response_mdl = WSResponseMdl(500,"match","No Doctor Found")
 
