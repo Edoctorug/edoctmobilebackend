@@ -319,10 +319,10 @@ class ChatRouter:
               return chat_uuid
     def initPatient(self,active_patient_x,active_medic):
 
-        patient_object = Patients.objects.filter(user_id = active_patient, assigned_doctor = active_medic)#,receiver = active_receiver)
+        patient_object = Patients.objects.filter(user_id = active_patient_x, assigned_doctor = active_medic)#,receiver = active_receiver)
 
         if len(patient_object)==0:
-            patient_model = Patients.objects.get(user_id = active_patient)
+            patient_model = Patients.objects.get(user_id = active_patient_x)
             patient_model.assigned_doctor = active_medic
             patient_model.pair_status = True
             patient_model.save()
