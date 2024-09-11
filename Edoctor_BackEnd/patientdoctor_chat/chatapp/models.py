@@ -24,6 +24,7 @@ class HospitalUsers(models.Model):
     online = models.BooleanField(default=False)
     channel_name = models.CharField(default = "", max_length = 255)
 
+
 class Doctors(models.Model):
     """
     Table representing all the Doctor roles in the hospital
@@ -49,6 +50,7 @@ class Patients(models.Model):
     """
     user_id = models.ForeignKey(User, on_delete = models.CASCADE)
     assigned_doctor = models.ForeignKey(Doctors, on_delete = models.CASCADE, null=True)
+    pair_status = models.BooleanField(default=False)
 
 class Specialities(models.Model):
     """

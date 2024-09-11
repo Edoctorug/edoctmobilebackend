@@ -87,13 +87,15 @@ class ChatRouter:
             print("finding patient: ",self.chat_user_id)
             print("finding session id : ",self.chat_session_id)
             patient_object = await UserDB().getHospitalObject(self.chat_user_id)
-            
+            active_patient_x =  await UserDB().getPatientObject(self.chat_user_id)
+            init_patient_status = await (sync_to_async(lambda :self.resetPatient(active_patient_x)))()
             if len(online_users) <1:
                 response_mdl = WSResponseMdl(500,"match","No Doctor Found")
 
                 #print(adoctor_name,"\n")
                 return response_mdl.serial() 
             print("\tall online users: ",online_users)
+
             for online_match in online_users:
                 amatch_id = online_match["user_id_id"]
                 active_user = await UserDB().getHospitalObject(self.chat_user_id)
@@ -118,6 +120,24 @@ class ChatRouter:
                 print("verifying patient: ",patient_id)
                 active_user = await UserDB().getHospitalObject(self.chat_user_id)
                 active_match = await UserDB().getHospitalObject(patient_id) #get patient object for the patient to get assigned to
+                active_patient = await UserDB().getPatientObject(patient_id)
+                active_doctor = await UserDB().getDoctorObject(self.chat_user_id)
+                if (active_patient.pair_status==True):
+                        doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
+                        doctor_chat_json = WSResponseMdl(500,"match","Patient Not Found",doctor_chat_details)
+                        #print(adoctor_name,"\n")
+                        #return response_mdl.serial()
+                        #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
+                        return doctor_chat_json.serial()
+
+                init_patient_status = await (sync_to_async(lambda :self.initPatient(active_patient,active_doctor)))() #init patient dataset
+                if (init_patient_status==True):
+                        doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(match_chat_uuid)}
+                        doctor_chat_json = WSResponseMdl(500,"match","Patient Busy",doctor_chat_details)
+                        #print(adoctor_name,"\n")
+                        #return response_mdl.serial()
+                        #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
+                        return doctor_chat_json.serial()
                 user_chat_uuid = await (sync_to_async(lambda :self.initChat(active_user,active_match)))() #save the assignment
                 #await save_patient()
                 #print("\t\tpatient object: ",active_patient)
@@ -293,10 +313,35 @@ class ChatRouter:
             chat_uuid = chat_model.chat_uuid
             return chat_uuid
          else:
+              chat_uuid = user_chats[0].chat_uuid
+              #return chat_uuid
+              return chat_uuid
+    def initPatient(self,active_patient,active_medic):
+        patient_object = Patients.objects.filter(user_id = active_patient, assigned_doctor = active_medic)#,receiver = active_receiver)
+
+        if len(patient_object)==0:
+            patient_model = Patients(user_id = active_patient, assigned_doctor = active_medic, pair_status = True)
+            patient_model.save()
+            
+            return True
+        else:
               #chat_uuid = user_chats[0].chat_uuid
               #return chat_uuid
-              return ""
-              
+              return False
+
+    def resetPatient(self,active_patient):
+        #patient_object = Patients.objects.filter(user_id = active_patient, assigned_doctor = active_medic)#,receiver = active_receiver)
+
+        #if len(patient_object)==0:
+        patient_model = Patients(user_id = active_patient, assigned_doctor = null, pair_status = False)
+        patient_model.save()
+            
+        #    return True
+        # else:
+              #chat_uuid = user_chats[0].chat_uuid
+              #return chat_uuid
+        #      return False
+        return True
     def setOnline(self, chat_obj):
          online_status = self.chat_obj["online_status"]
          user_object = async_to_sync( lambda: UserDB().getHospitalObject(self.chat_user_id))()
