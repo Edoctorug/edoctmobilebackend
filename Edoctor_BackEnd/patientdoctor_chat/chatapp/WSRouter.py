@@ -636,9 +636,11 @@ class ChatRouter:
         lab_tests = []
 
         if self.chat_user.user_role !="patient":
-            lab_tests = LabTest.objects.filter(assigned_test_doctor = hospital_user)
+            doctor_user = (async_to_sync(lambda: UserDB().getDoctorObject(self.chat_user_id)))()
+            lab_tests = LabTest.objects.filter(assigned_test_doctor = doctor_user)
         else:
-            lab_tests = LabTest.objects.filter(assigned_test_patient = hospital_user)
+            patient_user = (async_to_sync(lambda: UserDB().getPatientObject(self.chat_user_id)))()
+            lab_tests = LabTest.objects.filter(assigned_test_patient = patient_user)
 
         all_labtests = []
         for lab_test in user_labtests:
