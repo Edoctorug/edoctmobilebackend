@@ -436,7 +436,8 @@ class ChatRouter:
              }
         channel_name = assigned_user.channel_name
         appointment_json = WSResponseMdl(200,"appointment","New Appointment",appointment_dic)
-        await self.chat_channel_layer.send(self.channel_name,{"type": "raw_chat_message","text":appointment.serial()})
+        await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":appointment.serial()})
+        await self.chat_channel_layer.send(channel_name,{"type": "raw_chat_message","text":appointment.serial()})
         #pass
 
     """function that handles lab test"""
