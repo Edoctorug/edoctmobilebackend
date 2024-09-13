@@ -195,7 +195,9 @@ class ChatRouter:
                 if self.chat_user.user_role == "doctor":
                      return None
                 elif self.chat_user.user_role == "patient":
-                    await sync_to_async(lambda: self.bookAppointment(chat_obj))()
+                    xchan, appointment = await sync_to_async(lambda: self.bookAppointment(chat_obj))()
+                    self.chat_channel_layer.send(xchan,{"type": "raw_chat_message","text":appointment_json.serial()})
+                    return appointment.serial()
                 print("book appointment")
         
         elif chat_cmd == "get_appointments":
@@ -436,8 +438,9 @@ class ChatRouter:
              }
         channel_name = assigned_user.channel_name
         appointment_json = WSResponseMdl(200,"appointment","New Appointment",appointment_dic)
-        await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":appointment_json.serial()})
-        await self.chat_channel_layer.send(channel_name,{"type": "raw_chat_message","text":appointment_json.serial()})
+        #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":appointment_json.serial()})
+        #self.chat_channel_layer.send(channel_name,{"type": "raw_chat_message","text":appointment_json.serial()})
+        return channel_name,appointment_json
         #pass
 
     """function that handles lab test"""
