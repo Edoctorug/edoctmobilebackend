@@ -196,7 +196,7 @@ class ChatRouter:
                      return None
                 elif self.chat_user.user_role == "patient":
                     xchan, appointment = await sync_to_async(lambda: self.bookAppointment(chat_obj))()
-                    self.chat_channel_layer.send(xchan,{"type": "raw_chat_message","text":appointment_json.serial()})
+                    self.chat_channel_layer.send(xchan,{"type": "raw_chat_message","text":appointment.serial()})
                     return appointment.serial()
                 print("book appointment")
         
