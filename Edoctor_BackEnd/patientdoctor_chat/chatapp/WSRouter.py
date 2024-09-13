@@ -290,8 +290,12 @@ class ChatRouter:
 
                 await consumer_obj.send(text_data = response_mdl.serial()) 
                 print("ordering labtest")
-        
+
         elif chat_cmd == "get_labtests":
+                labtests_status = await sync_to_async( lambda: self.getLabTests(chat_obj))()
+                response_mdl = WSResponseMdl(200,"labtests","all labtests",labtest_status) #generate websocket prescription response
+
+                await consumer_obj.send(text_data = response_mdl.serial()) 
                 print("getting labtests")
         print("routing request")
 
@@ -457,7 +461,7 @@ class ChatRouter:
          patient_user_id = assigned_hospital_patient.user_id
          patient_object = (async_to_sync( lambda: UserDB().getPatientObject(patient_user_id)))()
          
-         lab_test = LabTest(assigned_test_doctor = doctor_object,assigned_test_patient = patient_object,test_details = test_name)
+         lab_test = LabTest(test_name = test_name,assigned_test_doctor = doctor_object,assigned_test_patient = patient_object,test_details = tester_name)
 
          lab_test.save()
 
@@ -614,6 +618,48 @@ class ChatRouter:
         
         print(all_records)
         return all_records
+
+    
+    def getLabTests(self,chat_obj):
+        """
+            Retrieves the appointments assigned to the user.
+
+            Returns:
+                QuerySet or list: The appointments assigned to the user.
+        """
+        hospital_user = (async_to_sync(lambda: UserDB().getHospitalObject(self.chat_user_id)))()
+
+        lab_tests = []
+
+        if self.chat_user.user_role !="patient":
+            lab_tests = LabTest.objects.filter(assigned_test_doctor = hospital_user)
+        else:
+            lab_tests = LabTest.objects.filter(assigned_test_patient = hospital_user)
+
+        all_labtests = []
+        for lab_test in user_labtests:
+             test_uuid = lab_test.test_uuid
+             test_name = lab_test.test_name
+             test_for = lab_test.assigned_test_patient.user_id.get_full_name()
+             test_author = lab_test.assigned_test_doctor.user_id.get_full_name()
+             test_details = lab_test.test_details
+             test_results = lab_test.test_results
+             test_date = str(lab_test.test_date)
+
+             test_dic = {
+             "labtest_uuid":test_uuid,
+             "labtest_name":test_name,
+             "labtest_for":test_for,
+             "labtest_author":test_author,
+             "labtest_details":test_details,
+             "labtest_results":test_results,
+             "labtest_date":test_date
+             }
+             all_labtests.append(test_dic)
+             
+
+        print(all_labtests)
+        return all_labtests
     
     def getPrescriptions(self,chat_obj):
         """

@@ -141,10 +141,14 @@ class Prescriptions(models.Model):
     #order = models.ForeignKey(OrderDrugs,on_delete = models.CASCADE, null = True)
 
 class LabTest(models.Model):
+    test_uuid = models.UUIDField(unique = True,default = uuid.uuid4, editable = False)
+    test_name = models.CharField(default = "",max_length = 255)
     assigned_test_doctor = models.ForeignKey(Doctors,on_delete = models.CASCADE)
     assigned_test_patient = models.ForeignKey(Patients,on_delete = models.CASCADE)
     test_details = models.CharField(default = "",max_length = 255)
-    
+    test_results = models.CharField(default = "",max_length = 255)
+    test_date = models.DateField(auto_now = True)
+
 
 class PatientRecords(models.Model):
     """
