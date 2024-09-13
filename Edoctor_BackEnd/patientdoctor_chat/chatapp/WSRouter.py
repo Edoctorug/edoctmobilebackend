@@ -420,6 +420,19 @@ class ChatRouter:
         appointment = Appointments(appointment_setter = self.chat_user,appointment_with = assigned_user,appointment_date = an_appointment_date, appointment_time = an_appointment_time,appointment_initial_date = now_appointment_date, appointment_initial_time = now_appointment_time,appointment_details = raw_appointment_note)
 
         appointment.save()
+        appointment_name = appointment.appointment_with.user_id.get_full_name()
+        appointment_dic = {
+                  "appointment_with": appointment_name,
+                  "appointment_uuid": str(appointment.appointment_uuid),
+                  "appointment_time": str(appointment.appointment_time),
+                  "appointment_initial_time":str(appointment.appointment_initial_time),
+                  "appointment_date": str(appointment.appointment_date),
+                  "appointment_initial_date":str(appointment.appointment_initial_date),
+                  "appointment_note":appointment.appointment_details
+             }
+        channel_name = assigned_user.channel_name
+        appointment_json = WSResponseMdl(200,"appointment","New Appointment",appointment_dic)
+        await self.chat_channel_layer.send(self.channel_name,{"type": "raw_chat_message","text":appointment.serial()})
         #pass
 
     """function that handles lab test"""
