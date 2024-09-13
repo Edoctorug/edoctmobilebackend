@@ -644,7 +644,7 @@ class ChatRouter:
 
         all_labtests = []
         for lab_test in lab_tests:
-             test_uuid = lab_test.test_uuid
+             test_uuid = str(lab_test.test_uuid)
              test_name = lab_test.test_name
              test_for = lab_test.assigned_test_patient.user_id.get_full_name()
              test_author = lab_test.assigned_test_doctor.user_id.get_full_name()
