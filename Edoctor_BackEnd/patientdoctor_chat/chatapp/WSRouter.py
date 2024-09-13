@@ -643,7 +643,7 @@ class ChatRouter:
             lab_tests = LabTest.objects.filter(assigned_test_patient = patient_user)
 
         all_labtests = []
-        for lab_test in user_labtests:
+        for lab_test in lab_tests:
              test_uuid = lab_test.test_uuid
              test_name = lab_test.test_name
              test_for = lab_test.assigned_test_patient.user_id.get_full_name()
