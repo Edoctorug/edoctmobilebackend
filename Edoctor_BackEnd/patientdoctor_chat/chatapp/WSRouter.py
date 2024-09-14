@@ -295,7 +295,7 @@ class ChatRouter:
 
         elif chat_cmd == "get_labtests":
                 labtests_status = await sync_to_async( lambda: self.getLabTests(chat_obj))()
-                response_mdl = WSResponseMdl(200,"labtests","all labtests",labtests_status) #generate websocket prescription response
+                response_mdl = WSResponseMdl(200,"labtests","all labtests",{"labtests_history":labtests_status}) #generate websocket prescription response
 
                 await consumer_obj.send(text_data = response_mdl.serial()) 
                 print("getting labtests")
