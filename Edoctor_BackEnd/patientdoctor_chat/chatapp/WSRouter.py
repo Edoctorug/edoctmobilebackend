@@ -253,8 +253,8 @@ class ChatRouter:
                 await consumer_obj.send(text_data = response_mdl.serial()) #send websocket prescribe response to client
                 print("prescribing drugs")
 
-        elif chat_cmd == "get_prescriptions":
-                print("getting prescriptions")
+        #elif chat_cmd == "get_prescriptions":
+        #        print("getting prescriptions")
 
 
         elif chat_cmd == "save_record":
@@ -266,9 +266,14 @@ class ChatRouter:
 
 
         elif chat_cmd == "order_drug":
-              print("ordering drugs")
+            response_mdl = WSResponseMdl(500,"save_record","") #generate websocket prescription response
+
+            await consumer_obj.send(text_data = response_mdl.serial())
+            print("ordering drugs")
 
         elif chat_cmd == "get_orders":
+                response_mdl = WSResponseMdl(200,"orders","No orders",{"orders_history":[]})
+                await consumer_obj.send(text_data=response_mdl.serial())
                 print("getting orders")
 
         elif chat_cmd == "get_records":
