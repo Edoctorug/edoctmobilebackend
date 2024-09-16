@@ -432,8 +432,10 @@ class ChatRouter:
 
         appointment.save()
         appointment_name = appointment.appointment_with.user_id.get_full_name()
+        appointment_author = appointment.appointment_setter.user_id.get_full_name()
         appointment_dic = {
                   "appointment_with": appointment_name,
+                  "appointment_author":appointment_author,
                   "appointment_uuid": str(appointment.appointment_uuid),
                   "appointment_time": str(appointment.appointment_time),
                   "appointment_initial_time":str(appointment.appointment_initial_time),
