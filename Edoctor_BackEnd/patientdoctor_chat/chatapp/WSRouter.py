@@ -569,7 +569,7 @@ class ChatRouter:
         all_appointments = []
         for created_appointment in created_appointments:
              appointment_name = created_appointment.appointment_with.user_id.get_full_name()
-             appointment_author = appointment.appointment_setter.user_id.get_full_name()
+             appointment_author = created_appointment.appointment_setter.user_id.get_full_name()
              appointment_dic = {
                   "appointment_with": appointment_name,
                   "appointment_author":appointment_author,
@@ -584,7 +584,7 @@ class ChatRouter:
              
         for invited_appointment in invited_appointments:
              appointment_name = invited_appointment.appointment_with.user_id.get_full_name()
-             appointment_author = appointment.appointment_setter.user_id.get_full_name()
+             appointment_author = invited_appointment.appointment_setter.user_id.get_full_name()
              appointment_dic = {
                   "appointment_with": appointment_name,
                   "appointment_author":appointment_author,
