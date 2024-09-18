@@ -76,6 +76,44 @@ class ChatRouter:
             return response_mdl.serial()
         elif chat_cmd =="set_online":
            self.setOnline(chat_obj)
+        elif (chat_cmd == "get_all_online") and (self.chat_user!=None):
+            if self.chat_user.user_role != "patient":
+                
+                return None
+            target_role = chat_obj["message"]
+            find_online = sync_to_async(self.findOnline)
+            online_users = await find_online(chat_obj) #look for online doctors
+            print("finding patient: ",self.chat_user_id)
+            print("finding session id : ",self.chat_session_id)
+            patient_object = await UserDB().getHospitalObject(self.chat_user_id)
+            active_patient_x =  await UserDB().getUserObject(self.chat_user_id)
+            #init_patient_status = await (sync_to_async(lambda :self.resetPatient(active_patient_x)))()
+            if len(online_users) <1:
+                response_mdl = WSResponseMdl(500,"match","No Doctor Found")
+
+                #print(adoctor_name,"\n")
+                return response_mdl.serial() 
+            print("\tall online users: ",online_users)
+            all_doctors = []
+            for online_match in online_users:
+                amatch_user = online_match["user_id"]
+                amatch_id = online_match["user_id_id"]
+                active_user = await UserDB().getHospitalObject(self.chat_user_id)
+                active_match = await UserDB().getHospitalObject(amatch_id) #get doctor object for the doctor to get assigned to
+                current_user_names = await UserDB().getFullNames(self.chat_user_id)
+                doc_user_names = await UserDB().getFullNames(amatch_id)
+                doctor_chat_details = {"full_names":doc_user_names,"user_name":amatch_user.username,"assigned_patient":"","chat_uuid":""}
+                all_doctors.append(doctor_chat_details)
+                #doctor_chat_json = WSResponseMdl(200,"verify_online","Patient Found",doctor_chat_details)
+                #self.chat_to_channel = await UserDB().getChannelName(active_match.id)
+                #print(adoctor_name,"\n")
+                #return response_mdl.serial()
+                #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()})
+            response_mdl = WSResponseMdl(200,"all_online","Doctors Found",{"online_medics":all_doctors,"role":target_roless})
+
+                #print(adoctor_name,"\n")
+            return response_mdl.serial() 
+            print("finished iterating online users")
         elif (chat_cmd == "get_online") and (self.chat_user!=None):
             if self.chat_user.user_role != "patient":
                 #response_mdl = WSResponseMdl(500,"match","Doctor Waiting .... ")
@@ -306,6 +344,9 @@ class ChatRouter:
                 print("getting labtests")
         print("routing request")
 
+
+
+
     def initChat(self,active_sender,active_receiver):
          """
             Initializes a chat between the active sender and receiver.
@@ -404,6 +445,10 @@ class ChatRouter:
         if(len(online_users)>0):
             return online_users
         return []
+
+    def getDoctors(self,chat_obj):
+        find_online = sync_to_async(self.findOnline)
+        online_users = await find_online(chat_obj)
     
     def bookAppointment(self,chat_obj):
 
@@ -466,11 +511,17 @@ class ChatRouter:
          test_name = lab_test["test_name"]
          print("\nLab Test: ",lab_test)
 
-         doctor_object = (async_to_sync( lambda: UserDB().getDoctorObject(self.chat_user_id)))()
+         chat_uuid = chat_obj["chat_uuid"]
+         chat_datum = Chats.objects.get(chat_uuid=chat_uuid)
+         hospital_object_doc = chat_datum.sender
+         hospital_object_patient = chat_datum.receiver
+         doc_ID = hospital_object_doc.user_id
+         patient_id = hospital_object_patient.user_id
+         doctor_object = (async_to_sync( lambda: UserDB().getDoctorObject(doc_ID)))()#(async_to_sync( lambda: UserDB().getDoctorObject(self.chat_user_id)))()
         
-         assigned_hospital_patient = doctor_object.assigned_patient
-         patient_user_id = assigned_hospital_patient.user_id
-         patient_object = (async_to_sync( lambda: UserDB().getPatientObject(patient_user_id)))()
+         #assigned_hospital_patient = doctor_object.assigned_patient
+         #patient_user_id = assigned_hospital_patient.user_id
+         patient_object = (async_to_sync( lambda: UserDB().getPatientObject(patient_id)))()
          
          lab_test = LabTest(test_name = test_name,assigned_test_doctor = doctor_object,assigned_test_patient = patient_object,test_details = tester_name)
 
@@ -645,11 +696,14 @@ class ChatRouter:
         hospital_user = (async_to_sync(lambda: UserDB().getHospitalObject(self.chat_user_id)))()
 
         lab_tests = []
-
+        chat_uuid = chat_obj["chat_uuid"]
+        #hospital_object = Chats.objects.get(chat_uuid=chat_uuid).sender
         if self.chat_user.user_role !="patient":
+            
             doctor_user = (async_to_sync(lambda: UserDB().getDoctorObject(self.chat_user_id)))()
             lab_tests = LabTest.objects.filter(assigned_test_doctor = doctor_user)
         else:
+            
             patient_user = (async_to_sync(lambda: UserDB().getPatientObject(self.chat_user_id)))()
             lab_tests = LabTest.objects.filter(assigned_test_patient = patient_user)
 
