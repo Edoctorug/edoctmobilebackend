@@ -81,7 +81,7 @@ class ChatRouter:
                 
                 return None
             target_role = chat_obj["message"]
-            find_online = sync_to_async(self.findOnline)
+            find_online = sync_to_async(self.findOnlineMedics)
             online_users = await find_online(chat_obj) #look for online doctors
             print("finding patient: ",self.chat_user_id)
             print("finding session id : ",self.chat_session_id)
@@ -96,8 +96,8 @@ class ChatRouter:
             print("\tall online users: ",online_users)
             all_doctors = []
             for online_match in online_users:
-                amatch_user = online_match["user_id"]
-                amatch_id = online_match["user_id_id"]
+                amatch_user = online_match.user_id
+                amatch_id = amatch_user.id#online_match["user_id_id"]
                 active_user = await UserDB().getHospitalObject(self.chat_user_id)
                 active_match = await UserDB().getHospitalObject(amatch_id) #get doctor object for the doctor to get assigned to
                 current_user_names = await UserDB().getFullNames(self.chat_user_id)
@@ -442,6 +442,14 @@ class ChatRouter:
         doctor_type = chat_obj["message"] #doctor speciality to get
         chat_user_role = chat_obj["message"]
         online_users = HospitalUsers.objects.filter(user_role = chat_user_role, online=True).values() #find the 1st online doctor
+        if(len(online_users)>0):
+            return online_users
+        return []
+
+    def findOnlineMedics(self,chat_obj): #look for online doctors
+        doctor_type = chat_obj["message"] #doctor speciality to get
+        chat_user_role = chat_obj["message"]
+        online_users = HospitalUsers.objects.filter(user_role = chat_user_role, online=True) #find the 1st online doctor
         if(len(online_users)>0):
             return online_users
         return []

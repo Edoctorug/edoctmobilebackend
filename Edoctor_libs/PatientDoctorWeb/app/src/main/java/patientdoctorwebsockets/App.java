@@ -178,7 +178,8 @@ public class App {
        if(universal_role.equalsIgnoreCase("patient"))
        {
             System.out.println("finding doctors");
-            hospitalman.findOnlineDoc();
+            //hospitalman.findOnlineDoc();
+            hospitalman.findAllOnlineDoc();
        }
        
        ResponseModel latest_response = wsRouter.start();
