@@ -446,9 +446,9 @@ class ChatRouter:
             return online_users
         return []
 
-    def getDoctors(self,chat_obj):
-        find_online = sync_to_async(self.findOnline)
-        online_users = await find_online(chat_obj)
+    #def getDoctors(self,chat_obj):
+    #    find_online = sync_to_async(self.findOnline)
+    #    online_users = await find_online(chat_obj)
     
     def bookAppointment(self,chat_obj):
 
