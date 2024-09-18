@@ -69,6 +69,20 @@ class UserDB:
         hospital_user = User.objects.get(id = userID)
         print("internal : ", hospital_user)
         return  hospital_user.get_full_name()
+    def getUserObjectFromUserName(self,user_name):
+        """
+        Retrieves the full names associated with the given user ID.
+
+        Args:
+            self: The instance of the class.
+            userID (int): The user ID for which full names are to be retrieved.
+
+        Returns:
+            str: The full names associated with the given user ID.
+        """
+        hospital_user = User.objects.get(username = user_name)
+        print("internal : ", hospital_user)
+        return  hospital_user
     
     async def getPatientObject(self,userID):
         """

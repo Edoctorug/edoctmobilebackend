@@ -149,10 +149,15 @@ class ChatRouter:
 
         elif chat_cmd == "verify_match":
                 if self.chat_user.user_role == "patient":
-                #response_mdl = WSResponseMdl(500,"match","Doctor Waiting .... ")
-                #print(adoctor_name,"\n")
-                #return response_mdl.serial()
-                    return None
+                    doc_uname = chat_obj["message"]
+                    active_doc_user = await UserDB().getUserObjectFromUserName(doc_uname)
+                    active_user = await UserDB().getHospitalObject(self.chat_user_id)
+                    active_match = await UserDB().getHospitalObject(active_doc_user.id) #get doctor object for the patient to get assigned to
+
+                    active_patient = await UserDB().getPatientObject(self.chat_user_id)
+                    active_patient_user = await UserDB().getUserObject(self.chat_user_id)
+                    active_doctor = await UserDB().getDoctorObject(active_doc_user.id)
+                    return await self.verifyMatch(active_user,active_match)
                 patient_id = chat_obj["message"]
                 amatch_id = patient_id
                 print("verifying patient: ",patient_id)
@@ -345,6 +350,46 @@ class ChatRouter:
         print("routing request")
 
 
+    async def verifyMatch(active_user,active_match):
+                user_chat_uuid = await (sync_to_async(lambda :self.initChat(active_user,active_match)))() #save the assignment
+                #await save_patient()
+                #print("\t\tpatient object: ",active_patient)
+                #doctor_object.assigned_patient = active_patient
+                
+                #save_assigned_doctor = sync_to_async(lambda: doctor_object.save())
+                #await save_assigned_doctor()
+                match_chat_uuid = await (sync_to_async(lambda :self.initChat(active_match,active_user)))()
+                print(f"{user_chat_uuid} <--:::::--> {match_chat_uuid}")
+                amatch_id = active_match.id
+
+                #assigned_doctor = await (sync_to_async(lambda :patient_object.assigned_doctor.user_id))()
+
+                if (len(user_chat_uuid)<=0) and (len(match_chat_uuid)<=0):
+                        doctor_chat_details = {"full_names":"","assigned_patient":"","chat_uuid":str(match_chat_uuid)}
+                        doctor_chat_json = WSResponseMdl(500,"match","Patient Not Found",doctor_chat_details)
+                        
+                        return doctor_chat_json.serial()
+                self.chat_to_channel = await UserDB().getChannelName(active_match.id)
+                
+                current_user_names = await UserDB().getFullNames(self.chat_user_id)
+                
+                doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(user_chat_uuid)}
+                doctor_chat_json = WSResponseMdl(200,"match","Patient Found",doctor_chat_details)
+                #print(adoctor_name,"\n")
+                #return response_mdl.serial()
+                await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
+                #return doctor_chat_json.serial()
+                
+                adoctor_name = await UserDB().getFullNames(amatch_id)
+                online_meta = {"full_names":adoctor_name,"assigned_patient":"","chat_uuid":str(match_chat_uuid)}
+                response_mdl = WSResponseMdl(200,"match","Doctor Found",online_meta)
+
+                print(adoctor_name,"\n")
+                #await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":response_mdl.serial()}) #
+                return response_mdl.serial()
+
+
+                
 
 
     def initChat(self,active_sender,active_receiver):
