@@ -360,7 +360,7 @@ class ChatRouter:
                 #await save_assigned_doctor()
                 match_chat_uuid = await (sync_to_async(lambda :self.initChat(active_match,active_user)))()
                 print(f"{user_chat_uuid} <--:::::--> {match_chat_uuid}")
-                amatch_id = active_match.id
+                amatch_id = self.chat_user_id
 
                 #assigned_doctor = await (sync_to_async(lambda :patient_object.assigned_doctor.user_id))()
 
@@ -372,7 +372,7 @@ class ChatRouter:
                 self.chat_to_channel = await UserDB().getChannelName(active_match.id)
                 
                 current_user_names = await UserDB().getFullNames(self.chat_user_id)
-                
+                patient_id  = active_user.id
                 doctor_chat_details = {"full_names":current_user_names,"assigned_patient":patient_id,"chat_uuid":str(user_chat_uuid)}
                 doctor_chat_json = WSResponseMdl(200,"match","Patient Found",doctor_chat_details)
                 #print(adoctor_name,"\n")
