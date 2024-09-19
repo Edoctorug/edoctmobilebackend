@@ -71,12 +71,12 @@ class UserDB:
         print("internal : ", hospital_user)
         return  hospital_user.get_full_name()
 
-    def getUserObjectFromUserName(self,user_name):
+    async def getUserObjectFromUserName(self,user_name):
         get_user_object = sync_to_async(self.getUserObjectFromusername)
         user_object = await get_user_object(user_name)
         return user_object
 
-    async def getUserObjectFromusername(self,user_name):
+    def getUserObjectFromusername(self,user_name):
         """
         Retrieves the full names associated with the given user ID.
 
