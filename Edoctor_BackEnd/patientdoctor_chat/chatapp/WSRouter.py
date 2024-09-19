@@ -350,7 +350,7 @@ class ChatRouter:
         print("routing request")
 
 
-    async def verifyMatch(active_user,active_match):
+    async def verifyMatch(self,active_user,active_match):
                 user_chat_uuid = await (sync_to_async(lambda :self.initChat(active_user,active_match)))() #save the assignment
                 #await save_patient()
                 #print("\t\tpatient object: ",active_patient)
