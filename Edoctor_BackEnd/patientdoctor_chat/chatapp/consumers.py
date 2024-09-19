@@ -90,9 +90,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             None
         """
         print("event : ",event)
-        response_mdl = WSResponseMdl(200,"chat",event["text"])
+        #response_mdl = WSResponseMdl(200,"chat",event["text"])
 
-        chat_json = response_mdl.serial()
+        #chat_json = response_mdl.serial()
         await self.send(text_data=event["text"])
 
 class XChatConsumer(AsyncConsumer):

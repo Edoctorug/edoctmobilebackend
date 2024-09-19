@@ -922,13 +922,22 @@ class ChatRouter:
         print("\tactive_chat_sender: ",active_chat_sender)
         active_chat_sender_channel = active_chat_sender.channel_name
 
+        doctor_names = await UserDB().getFullNames(active_chat_sender.user_id.id)
         #get the chat object related to the thid user 
         recv_object = await (sync_to_async(lambda: Chats.objects.get(sender = active_chat_object.receiver, receiver=active_chat_object.sender)))()
 
         recv_uuid = await (sync_to_async(lambda: recv_object.chat_uuid))()
 
         print("\t sending data to: ", recv_uuid)
-        await self.chat_channel_layer.send(active_chat_sender_channel,{"type": "chat_message","text":chat_message,"uuid":str(recv_uuid)})
+        chat_dic = {
+            "full_names": doctor_names,
+            "chat_uuid":str(recv_uuid),
+            "assigned_patient":""
+        }
+
+        chat_json = WSResponseMdl(200,"chat",chat_message,chat_dic)
+        #await self.chat_channel_layer.send(active_chat_sender_channel,{"type": "chat_message","text":chat_message,"uuid":str(recv_uuid)})
+        await self.chat_channel_layer.send(active_chat_sender_channel,{"type": "raw_chat_message","text":chat_json.serial()})
         chat_msg = ChatMsgModel(0,chat_message,0)
 
         active_chat_object.chat_data["chat_data"].append(chat_msg.__dict__)
