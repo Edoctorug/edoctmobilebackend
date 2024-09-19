@@ -380,7 +380,7 @@ class ChatRouter:
                 await self.chat_channel_layer.send(self.chat_to_channel,{"type": "raw_chat_message","text":doctor_chat_json.serial()}) #send message
                 #return doctor_chat_json.serial()
                 
-                adoctor_name = await (sync_to_async(lambda: active_chat_sender.user_id.get_full_name()))()#await UserDB().getFullNames(amatch_id)
+                adoctor_name = await (sync_to_async(lambda: active_match.user_id.get_full_name()))()#await UserDB().getFullNames(amatch_id)
                 online_meta = {"full_names":adoctor_name,"assigned_patient":"","chat_uuid":str(match_chat_uuid)}
                 response_mdl = WSResponseMdl(200,"match","Doctor Found",online_meta)
 
