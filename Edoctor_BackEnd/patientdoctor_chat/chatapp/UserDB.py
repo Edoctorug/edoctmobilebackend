@@ -55,7 +55,7 @@ class UserDB:
         hospital_user = User.objects.get(id = userID)
         print("internal : ", hospital_user)
         return  hospital_user
-    def getFullnames(self,userID):
+    async def getFullnames(self,userID):
         """
         Retrieves the full names associated with the given user ID.
 
