@@ -834,7 +834,7 @@ class ChatRouter:
                   "prescribed_for": prescribed_for,
                   "prescription_id": str(user_prescription.prescription_id),
                   "prescription_date": str(user_prescription.prescription_date),
-                  "prescription_note":user_prescription.notes,
+                  "prescription_note":user_prescription.notes+"\t"+user_prescription.prescribed_dose,
                   "prescription_medicine":user_prescription.prescribed_medicine,
                   "prescription_dosage":user_prescription.prescribed_dose
              }
