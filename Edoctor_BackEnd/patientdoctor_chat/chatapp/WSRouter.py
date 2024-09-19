@@ -360,7 +360,7 @@ class ChatRouter:
                 #await save_assigned_doctor()
                 match_chat_uuid = await (sync_to_async(lambda :self.initChat(active_match,active_user)))()
                 print(f"{user_chat_uuid} <--:::::--> {match_chat_uuid}")
-                amatch_id = self.chat_user_id
+                amatch_id = active_match.user_id.id#self.chat_user_id
 
                 #assigned_doctor = await (sync_to_async(lambda :patient_object.assigned_doctor.user_id))()
 
