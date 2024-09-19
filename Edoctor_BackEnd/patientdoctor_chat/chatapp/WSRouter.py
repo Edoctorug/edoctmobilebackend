@@ -494,7 +494,8 @@ class ChatRouter:
     def findOnlineMedics(self,chat_obj): #look for online doctors
         doctor_type = chat_obj["message"] #doctor speciality to get
         chat_user_role = chat_obj["message"]
-        online_users = HospitalUsers.objects.filter(user_role = chat_user_role, online=True) #find the 1st online doctor
+        online_users = HospitalUsers.objects.filter(user_role = chat_user_role)
+ #, online=True) #find the 1st online doctor
         if(len(online_users)>0):
             patient_object = (async_to_sync(lambda: UserDB().getHospitalObject(self.chat_user_id)))()#UserDB().getHospitalObject(self.chat_user_id)
             active_patient_x =  (async_to_sync(lambda: UserDB().getUserObject(self.chat_user_id)))()#await UserDB().getUserObject(self.chat_user_id)
