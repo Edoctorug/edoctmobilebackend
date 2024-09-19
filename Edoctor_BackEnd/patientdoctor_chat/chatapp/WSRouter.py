@@ -921,8 +921,8 @@ class ChatRouter:
         active_chat_sender = await (sync_to_async(lambda: active_chat_object.sender))()
         print("\tactive_chat_sender: ",active_chat_sender)
         active_chat_sender_channel = active_chat_sender.channel_name
-
-        doctor_names = await UserDB().getFullNames(active_chat_sender.user_id.id)
+        active_sender = active_chat_sender.user_id
+        doctor_names = await UserDB().getFullNames(active_sender.id)
         #get the chat object related to the thid user 
         recv_object = await (sync_to_async(lambda: Chats.objects.get(sender = active_chat_object.receiver, receiver=active_chat_object.sender)))()
 
