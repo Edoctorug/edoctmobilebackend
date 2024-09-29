@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib import sessions
 from django.views.decorators.csrf import csrf_exempt
-import json
+import json, os
 from django.http import FileResponse
 from django.template.response import TemplateResponse
 from django.contrib.auth.models import User
@@ -211,6 +211,6 @@ def mainPage(request):
 
 def downloadsPage(request):
         file_name = "EdoctorUg.apk"
-        file_path = BASE_DIR+"/templates/edoctorUg.apk"
+        file_path = os.path.join(BASE_DIR, "/templates/edoctorUg.apk")
         return FileResponse(open(file_path,'rb'),file_name = file_name,content_type="application/*",as_attachment=False)
         #return TemplateResponse(request,"")
