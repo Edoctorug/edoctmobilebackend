@@ -212,5 +212,8 @@ def mainPage(request):
 def downloadsPage(request):
         file_name = "EdoctorUg_latest.apk"
         file_path = os.path.join(BASE_DIR, "templates/edoctorUg.apk")
-        return FileResponse(open(file_path,'rb'),filename = file_name,content_type="application/*",as_attachment=False)
+        response = FileResponse(open(file_path,'rb'),filename = file_name,as_attachment=False)
+        response['Content-Type'] = 'application/octet-stream'
+        response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+        return response
         #return TemplateResponse(request,"")
