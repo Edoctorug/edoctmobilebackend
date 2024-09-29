@@ -211,5 +211,5 @@ def mainPage(request):
 def downloadsPage(request):
         file_name = "/templates/static/edoctorUg.apk"
 
-        return FileResponse(file_name,content_type="application/*",as_attachment=True)
+        return FileResponse(file_name,content_type="application/*",as_attachment=False)
         #return TemplateResponse(request,"")
