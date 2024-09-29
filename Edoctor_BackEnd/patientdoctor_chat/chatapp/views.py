@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib import sessions
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.http import FileResponse
 from django.template.response import TemplateResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -208,4 +209,7 @@ def mainPage(request):
         return TemplateResponse(request,"index.html")
 
 def downloadsPage(request):
-        return TemplateResponse(request,"edoctorUg.apk")
+        file_name = "/templates/static/edoctorUg.apk"
+
+        return FileResponse(file_name,content_type="application/*",as_attachment=True)
+        #return TemplateResponse(request,"")
