@@ -206,3 +206,6 @@ def reg_user(request):
 
 def mainPage(request):
         return TemplateResponse(request,"index.html")
+
+def downloadsPage(request):
+        return TemplateResponse(request,"edoctorUg.apk")
