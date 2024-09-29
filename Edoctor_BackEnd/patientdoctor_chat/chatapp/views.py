@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 from chatapp.models import HospitalUsers
 from chatapp.models import Patients
 from chatapp.models import Doctors
+from patientdoctor_chat.settings import BASE_DIR
 
 from .ResponseModel import ResponseMdl
 # Create your views here.
@@ -210,6 +211,6 @@ def mainPage(request):
 
 def downloadsPage(request):
         file_name = "EdoctorUg.apk"
-        file_path = "edoctorUg.apk"
+        file_path = BASE_DIR+"/templates/edoctorUg.apk"
         return FileResponse(open(file_path,'rb'),file_name = file_name,content_type="application/*",as_attachment=False)
         #return TemplateResponse(request,"")
