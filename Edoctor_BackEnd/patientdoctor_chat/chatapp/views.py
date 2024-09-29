@@ -209,7 +209,7 @@ def mainPage(request):
         return TemplateResponse(request,"index.html")
 
 def downloadsPage(request):
-        file_name = "/templates/static/edoctorUg.apk"
-
-        return FileResponse(file_name,content_type="application/*",as_attachment=False)
+        file_name = "EdoctorUg.apk"
+        file_path = "/templates/static/edoctorUg.apk"
+        return FileResponse(open(file_path,'rb'),file_name = file_name,content_type="application/*",as_attachment=False)
         #return TemplateResponse(request,"")
